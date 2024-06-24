@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hydrair</title>
     <style>
+        /* Einfaches CSS für die cyanfarbene Überschrift und den Container */
         body {
             padding: 20px;
         }
         h1 {
-            color: #00FFFF;
-            text-align: center;
+            color: #00FFFF; /* Cyan Farbe für die Überschrift */
+            text-align: center; /* Zentrierung der Überschrift */
         }
         .container {
             max-width: 600px;
@@ -25,91 +25,93 @@
         }
         .manual-input-label {
             margin-bottom: 5px;
-            display: block;
+            display: block;		
+        }
+		.form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            width: 100px; /* Einheitliche Breite für die Labels */
+        }
+        .form-group input {
+            width: 80px; /* Breite des Eingabefeldes */
+            margin-right: 5px; /* Abstand zwischen Eingabefeld und Einheit */
         }
     </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydrair by Wolle :D</title>
+    <script>
+        function saveData() {
+            // Hole die Eingabewerte für jeden Wochentag
+            const days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+            days.forEach(day => {
+                const value = document.getElementById(day).value;
+                localStorage.setItem(day, value);
+            });
+
+            // Zeige eine Bestätigung an
+            alert('Daten wurden gespeichert!');
+        }
+
+        function loadData() {
+            // Lade die gespeicherten Daten für jeden Wochentag
+            const days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+            days.forEach(day => {
+                const value = localStorage.getItem(day);
+                if (value) {
+                    document.getElementById(day).value = value;
+                }
+            });
+        }
+        window.onload = loadData; // Lade die Daten beim Laden der Seite
+    </script>
 </head>
 <body>
     <div class="container">
-        <h1>Hydrair</h1>
-
-        <h3>So viel haben Sie getrunken:</h3>
-        <ul id="weekdayList">
-            <!-- Placeholder for weekdays -->
-        </ul>
-
-        <label for="manualInput" class="manual-input-label">Hier zusätzliche Getränke in [ml] eingeben:</label>
-        <div class="manual-input">
-            <input type="number" id="manualInput" name="manualInput" min="0" step="any">
-            <button onclick="addManualInput()">Hinzufügen</button>
+    <h1>Hydrair</h1>
+    <h3>So viel haben Sie getrunken:</h3>
+   <form onsubmit="saveData(); return false;">
+        <div class="form-group">
+            <label for="Montag">Montag:</label>
+            <input type="number" id="Montag" name="Montag" required maxlength="4" max="9999">
+            <span>ml</span>
         </div>
-
-        <h2>Ihr CO2 Wert liegt bei:</h2>
-        <p id="co2Snapshot">N/A ppm</p>
-    </div>
-
-    <script>
-        // Function to fetch data from server
-        function fetchData() {
-            fetch('/Hydrair/data.json') // Replace with your server endpoint
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Fetched data:', data);
-                    updateData(data);
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-
-        // Function to update HTML elements with fetched data
-        function updateData(data) {
-            const weekdays = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
-            const weekdayList = document.getElementById('weekdayList');
-            weekdayList.innerHTML = ''; // Clear existing list items
-            const currentDayIndex = (new Date().getDay() + 6) % 7; // Adjust index for German week starting with Monday
-
-            weekdays.forEach((day, index) => {
-                const li = document.createElement('li');
-                const weightText = data[day.toLowerCase()] ? data[day.toLowerCase()] + ' ml' : 'N/A';
-                li.textContent = day + ': ' + weightText;
-                li.classList.add('weekday-item');
-                if (index === currentDayIndex) {
-                    li.setAttribute('id', 'today');
-                }
-                weekdayList.appendChild(li);
-            });
-
-            // Update CO2 snapshot
-            document.getElementById('co2Snapshot').textContent = data.co2 || 'N/A ppm';
-        }
-
-        // Function to add manual input to the current day
-        function addManualInput() {
-            const input = document.getElementById('manualInput');
-            const value = parseFloat(input.value);
-            if (!isNaN(value)) {
-                const todayItem = document.getElementById('today');
-                const day = todayItem.textContent.split(':')[0].trim();
-                const currentWeightText = todayItem.textContent.split(':')[1].trim();
-                const currentWeight = parseFloat(currentWeightText.split(' ')[0]);
-                if (!isNaN(currentWeight)) {
-                    const newValue = currentWeight + value;
-                    todayItem.textContent = day + ': ' + newValue.toFixed(1) + ' ml';
-                } else {
-                    todayItem.textContent = day + ': ' + value.toFixed(1) + ' ml';
-                }
-                input.value = ''; // Clear input field after adding
-            } else {
-                alert('Bitte geben Sie eine gültige Zahl ein.');
-            }
-        }
-
-        // Initial data fetch when page loads
-        document.addEventListener('DOMContentLoaded', fetchData);
-    </script>
+        <div class="form-group">
+            <label for="Dienstag">Dienstag:</label>
+            <input type="number" id="Dienstag" name="Dienstag" required maxlength="4" max="9999">
+            <span>ml</span>
+        </div>
+        <div class="form-group">
+            <label for="Mittwoch">Mittwoch:</label>
+            <input type="number" id="Mittwoch" name="Mittwoch" required maxlength="4" max="9999">
+            <span>ml</span>
+        </div>
+        <div class="form-group">
+            <label for="Donnerstag">Donnerstag:</label>
+            <input type="number" id="Donnerstag" name="Donnerstag" required maxlength="4" max="9999">
+            <span>ml</span>
+        </div>
+        <div class="form-group">
+            <label for="Freitag">Freitag:</label>
+            <input type="number" id="Freitag" name="Freitag" required maxlength="4" max="9999">
+            <span>ml</span>
+        </div>
+        <div class="form-group">
+            <label for="Samstag">Samstag:</label>
+            <input type="number" id="Samstag" name="Samstag" required maxlength="4" max="9999">
+            <span>ml</span>
+        </div>
+        <div class="form-group">
+            <label for="Sonntag">Sonntag:</label>
+            <input type="number" id="Sonntag" name="Sonntag" required maxlength="4" max="9999">
+            <span>ml</span>
+        </div>
+        <input type="submit" value="Speichern"/br>
+		<h2>Ihr CO2 Wert liegt bei:</h2>
+		<p id="co2Snapshot">N/A ppm</p>
+    </form>
 </body>
 </html>
